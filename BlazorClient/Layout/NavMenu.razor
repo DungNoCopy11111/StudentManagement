@@ -1,0 +1,38 @@
+﻿<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        @* Link này trỏ về trang chủ (Dashboard) *@
+        <a class="navbar-brand" href="">Quản lý Sinh viên</a>
+        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+</div>
+
+<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
+    <nav class="flex-column">
+        @* 1. Mục Dashboard (Trang chủ) *@
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                <span class="bi bi-speedometer2-fill" aria-hidden="true"></span> Dashboard
+            </NavLink>
+        </div>
+
+        @* 2. Mục Quản lý Sinh viên *@
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="students">
+                <span class="bi bi-person-badge-fill" aria-hidden="true"></span> Quản lý Sinh viên
+            </NavLink>
+        </div>
+    </nav>
+</div>
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}

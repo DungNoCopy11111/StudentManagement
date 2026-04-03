@@ -1,0 +1,49 @@
+﻿@page "/"
+@page "/dashboard"
+@using AntDesign
+@using ChartJs.Blazor
+
+<div style="padding: 24px; background: #f0f2f5; min-height: 100vh;">
+    <AntDesign.Title Level="2">Hệ thống Quản lý Sinh viên</AntDesign.Title>
+
+    @if (_data == null)
+    {
+        <div style="text-align: center; padding: 50px;">
+            <AntDesign.Spin Tip="Đang tải dữ liệu Dashboard..." Size="@SpinSize.Large" />
+        </div>
+    }
+    else
+    {
+        <AntDesign.Row Gutter="16">
+            <AntDesign.Col Span="12">
+                <AntDesign.Card Bordered="false">
+                    <AntDesign.Statistic Title="Tổng sinh viên" Value="@_data.TotalStudents" TValue="long" />
+                </AntDesign.Card>
+            </AntDesign.Col>
+            <AntDesign.Col Span="12">
+                <AntDesign.Card Bordered="false">
+                    <AntDesign.Statistic Title="Số lượng lớp" Value="@_data.TotalClasses" TValue="long" />
+                </AntDesign.Card>
+            </AntDesign.Col>
+        </AntDesign.Row>
+
+        <AntDesign.Row Gutter="16" Style="margin-top: 24px;">
+            <AntDesign.Col Xs="24" Lg="8">
+                <AntDesign.Card Title="Tỉ lệ theo Lớp" Bordered="false" Style="min-height: 400px;">
+                    @if (_pieConfig != null)
+                    {
+                        <Chart Config="_pieConfig" />
+                    }
+                </AntDesign.Card>
+            </AntDesign.Col>
+            <AntDesign.Col Xs="24" Lg="16">
+                <AntDesign.Card Title="Trạng thái sinh viên" Bordered="false" Style="min-height: 400px;">
+                    @if (_barConfig != null)
+                    {
+                        <Chart Config="_barConfig" />
+                    }
+                </AntDesign.Card>
+            </AntDesign.Col>
+        </AntDesign.Row>
+    }
+</div>

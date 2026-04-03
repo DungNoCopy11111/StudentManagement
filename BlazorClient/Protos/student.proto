@@ -1,0 +1,96 @@
+syntax = "proto3";
+
+option csharp_namespace = "StudentMgmt.GrpcServer";
+import "google/protobuf/empty.proto";
+
+service StudentGrpcService {
+  rpc GetPagedStudents (GetStudentsRequest) returns (PaginatedStudentResponse);
+  rpc CreateStudent (CreateStudentRequest) returns (StudentResponse);
+  rpc UpdateStudent (UpdateStudentRequest) returns (StudentResponse);
+  rpc DeleteStudent (DeleteStudentRequest) returns (DeleteResponse);
+  rpc BulkUpdateClassroom (BulkUpdateClassroomRequest) returns (BulkUpdateResponse);
+  rpc BulkUpdateStudents (BulkUpdateStudentsRequest) returns (BulkUpdateResponse);
+  rpc GetDashboard(google.protobuf.Empty) returns (GetDashboardResponse);
+}
+
+message BulkUpdateClassroomRequest {
+  repeated string student_ids = 1;
+  string new_classroom_id = 2;
+}
+
+message BulkUpdateResponse {
+  bool success = 1;
+  string message = 2;
+  int32 updated_count = 3;
+}
+
+message StatisticItem {
+  string label = 1;
+  double value = 2;
+}
+
+message GetDashboardResponse {
+  repeated StatisticItem by_class = 1;
+  repeated StatisticItem by_status = 2;
+  int32 total_students = 3;
+  int32 total_classes = 4;
+}
+message BulkUpdateStudentsRequest {
+  repeated string student_ids = 1;      
+  repeated string update_mask = 2;     
+
+  optional string address = 3;
+  optional string classroom_id = 4;
+  optional string status = 5;
+  optional string note = 6;
+}
+message GetStudentsRequest {
+  string search_code = 1;
+  int32 page_index = 2;
+  int32 page_size = 3;
+}
+
+message StudentResponse {
+  string id = 1;           
+  string student_code = 2;
+  string name = 3;
+  string birth_date = 4; 
+  string address = 5;
+  string class_name = 6;
+  string classroom_id = 7;
+}
+
+message CreateStudentRequest {
+  string name = 1;
+  string date_of_birth = 2; 
+  string email = 3;
+  string phone_number = 4;
+  string address = 5;
+  string classroom_id = 6;
+}
+
+message UpdateStudentRequest {
+  string id = 1;
+  optional string name = 2;
+  optional string date_of_birth = 3;
+  optional string email = 4;
+  optional string phone_number = 5;
+  optional string address = 6;
+  optional string classroom_id = 7;
+}
+
+message DeleteStudentRequest {
+  string id = 1;
+}
+
+message DeleteResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message PaginatedStudentResponse {
+  repeated StudentResponse items = 1;
+  int32 total_count = 2;
+  int32 page_index = 3;
+  int32 total_pages = 4;
+}

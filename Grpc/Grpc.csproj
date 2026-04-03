@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Protobuf Include="Protos\student.proto" GrpcServices="Server" />
+		<Protobuf Include="Protos\classroom.proto" GrpcServices="Server" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="AutoMapper" Version="13.0.1">
+			<NoWarn>NU1903</NoWarn>
+		</PackageReference>
+
+		<PackageReference Include="Grpc.AspNetCore" Version="2.62.0" />
+		<PackageReference Include="Grpc.AspNetCore.Server.Reflection" Version="2.62.0" />
+		<PackageReference Include="Grpc.AspNetCore.Web" Version="2.62.0" />
+
+		<PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Application\Application.csproj" />
+		<ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
+	</ItemGroup>
+
+</Project>

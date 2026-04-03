@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+option csharp_namespace = "StudentMgmt.GrpcServer";
+
+service ClassroomGrpcService {
+  rpc GetAllClassrooms (EmptyRequest) returns (ClassroomListResponse);
+}
+
+message EmptyRequest {}
+
+message ClassroomResponse {
+  string id = 1;     
+  string class_name = 2; 
+}
+
+message ClassroomListResponse {
+  repeated ClassroomResponse items = 1;
+}

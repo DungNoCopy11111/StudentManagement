@@ -1,0 +1,60 @@
+.navbar-toggler {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.navbar-brand {
+    font-size: 1.2rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: white !important;
+}
+
+/* Kiểu dáng các mục Menu */
+.nav-item {
+    font-size: 0.95rem;
+    padding: 0.2rem 0.7rem;
+}
+
+    .nav-item ::deep a {
+        color: #aeb7c2; /* Màu xám nhẹ cho chữ chưa chọn */
+        border-radius: 8px;
+        height: 3rem;
+        display: flex;
+        align-items: center;
+        transition: all 0.2s ease-in-out;
+        padding-left: 1rem;
+    }
+
+        /* Hiệu ứng khi rê chuột vào */
+        .nav-item ::deep a:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+            color: #ffffff;
+        }
+
+        /* Khi trang đang được mở (Active) */
+        .nav-item ::deep a.active {
+            background-color: #3f51b5; /* Màu xanh Indigo hiện đại */
+            color: white;
+            box-shadow: 0 4px 12px rgba(63, 81, 181, 0.3);
+        }
+
+    /* Icon trong menu */
+    .nav-item ::deep i {
+        font-size: 1.2rem;
+        margin-right: 0.75rem;
+    }
+
+@media (min-width: 641px) {
+    .navbar-toggler {
+        display: none;
+    }
+
+    .collapse {
+        display: block;
+    }
+
+    .nav-scrollable {
+        height: calc(100vh - 3.5rem);
+        overflow-y: auto;
+    }
+}

@@ -1,0 +1,22 @@
+/* Pages/Student/Student.razor.css */
+
+::deep .table thead th {
+    background-color: #f8f9fa;
+    color: #334155;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    border-top: none;
+    padding: 1rem;
+}
+
+::deep .table td {
+    padding: 1rem;
+    vertical-align: middle;
+    color: #475569;
+}
+
+::deep .card {
+    border-radius: 12px;
+}

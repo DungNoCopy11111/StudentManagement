@@ -1,0 +1,162 @@
+@page "/students"
+@using AntDesign
+@using StudentMgmt.GrpcServer
+
+<div style="padding: 24px; background: #f0f2f5; min-height: 100vh;">
+    @* --- HEADER --- *@
+    <div style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <Title Level="2" Style="margin-bottom: 4px;">Quản lý sinh viên</Title>
+            <Text Type="@TextElementType.Secondary">Hệ thống quản lý thông tin học viên (Bulk Update Pro)</Text>
+        </div>
+        <Space>
+            @if (_selectedStudents != null && _selectedStudents.Any())
+            {
+                <Button Type="@ButtonType.Default"
+                        Icon="@IconType.Outline.Edit"
+                        OnClick="ShowBulkUpdateModal"
+                        Danger>
+                    Cập nhật @_selectedStudents.Count() SV đã chọn
+                </Button>
+            }
+            <Button Type="@ButtonType.Primary"
+                    Icon="@IconType.Outline.Plus"
+                    Size="@ButtonSize.Large"
+                    OnClick="ShowModal">
+                Thêm sinh viên
+            </Button>
+        </Space>
+    </div>
+
+    @* --- SEARCH BAR --- *@
+    <Card Style="margin-bottom: 24px;" Bordered="false">
+        <Row Gutter="16" Align="@RowAlign.Middle">
+            <Col Xs="24" Sm="12" Md="8" Lg="6">
+                <Search Placeholder="Nhập mã hoặc tên..."
+                        Size="@InputSize.Large"
+                        EnterButton="true"
+                        AllowClear
+                        @bind-Value="@SearchTerm"
+                        OnSearch="OnSearchClick" />
+            </Col>
+            <Col>
+                <Button Icon="@IconType.Outline.Reload"
+                        OnClick="ResetSearch"
+                        Size="@ButtonSize.Large">
+                    Làm mới
+                </Button>
+            </Col>
+        </Row>
+    </Card>
+
+    @* --- TABLE --- *@
+    <Table DataSource="@Students"
+           TItem="StudentResponse"
+           Total="@TotalCount"
+           @bind-SelectedRows="_selectedStudents"
+           @bind-PageIndex="_pageIndex"
+           @bind-PageSize="_pageSize"
+           OnPageIndexChange="HandlePageChange"
+           Bordered
+           Loading="@IsLoading"
+           Size="@TableSize.Middle">
+        <ChildContent>
+            <Selection />
+            <PropertyColumn Property="c => c.StudentCode" Title="Mã SV" Sortable />
+            <PropertyColumn Property="c => c.Name" Title="Họ và tên" Sortable />
+            <PropertyColumn Property="c => c.BirthDate" Title="Ngày sinh" />
+            <PropertyColumn Property="c => c.ClassName" Title="Lớp hiện tại" />
+            
+            <ActionColumn Title="Thao tác">
+                <Space Size="@SpaceSize.Middle">
+                    <Button Type="@ButtonType.Link" Icon="@IconType.Outline.Edit" OnClick="() => ShowEditModal(context!)">Sửa</Button>
+                    <Popconfirm Title="@("Xác nhận xóa?")" OnConfirm="() => HandleDelete(context!.Id)">
+                        <Button Type="@ButtonType.Link" Danger Icon="@IconType.Outline.Delete">Xóa</Button>
+                    </Popconfirm>
+                </Space>
+            </ActionColumn>
+        </ChildContent>
+    </Table>
+
+    @* --- MODAL 1: THÊM / SỬA --- *@
+    <Modal Title="@(_isEditMode ? "Cập nhật sinh viên" : "Thêm sinh viên mới")"
+           Visible="@_modalVisible"
+           OnOk="HandleOk"
+           OnCancel="@(() => _modalVisible = false)"
+           ConfirmLoading="@_confirmLoading"
+           OkText="@("Lưu lại")">
+       
+        <Form Model="@_newStudent" TModel="CreateStudentRequest" Layout="@FormLayout.Vertical">
+            <FormItem Label="Họ và tên">
+                <Input @bind-Value="@context.Name" />
+            </FormItem>
+            <FormItem Label="Ngày sinh">
+                <DatePicker TValue="DateTime?" Style="width: 100%" Format="yyyy-MM-dd"
+                            OnChange="@((args) => { if(args.Date.HasValue) context.DateOfBirth = args.Date.Value.ToString("yyyy-MM-dd"); })" />
+            </FormItem>
+            <FormItem Label="Lớp học">
+                <Select @bind-Value="@context.ClassroomId"
+                        TItem="ClassroomResponse"
+                        TItemValue="string"
+                        DataSource="@_classrooms"
+                        LabelName="ClassName"
+                        ValueName="Id"
+                        Placeholder="Chọn lớp"
+                        EnableSearch />
+            </FormItem>
+            <FormItem Label="Địa chỉ">
+                <Input @bind-Value="@context.Address" />
+            </FormItem>
+        </Form>
+    </Modal>
+
+    @* --- MODAL 2: CẬP NHẬT HÀNG LOẠT (FIELDMASK) --- *@
+    <Modal Title="@("Cập nhật hàng loạt")"
+           Visible="@_changeClassModalVisible"
+           OnOk="HandleBulkUpdateOk"
+           OnCancel="@(() => _changeClassModalVisible = false)"
+           ConfirmLoading="@_confirmLoading"
+           OkText="@("Áp dụng")"
+           Width="600">
+    
+        <div style="margin-bottom: 16px;">
+            <Alert Message="@($"Đang chọn {(_selectedStudents?.Count() ?? 0)} sinh viên.")"
+                   Description="Tích chọn trường bạn muốn thay đổi đồng loạt."
+                   Type="@AlertType.Info" ShowIcon="true" />
+        </div>
+    
+        <div class="ant-form ant-form-vertical">
+            @* Lớp học *@
+            <Row Gutter="16" Align="@RowAlign.Middle" Style="margin-bottom: 16px;">
+                <Col Span="8"><Checkbox @bind-Checked="_updateClassEnabled">Đổi lớp học</Checkbox></Col>
+                <Col Span="16">
+                    <Select @bind-Value="@_targetClassId" TItem="ClassroomResponse" TItemValue="string"
+                            DataSource="@_classrooms" LabelName="ClassName" ValueName="Id"
+                            Disabled="!_updateClassEnabled" EnableSearch />
+                </Col>
+            </Row>
+
+            @* Địa chỉ *@
+            <Row Gutter="16" Align="@RowAlign.Middle" Style="margin-bottom: 16px;">
+                <Col Span="8"><Checkbox @bind-Checked="_updateAddressEnabled">Đổi địa chỉ</Checkbox></Col>
+                <Col Span="16">
+                    <Input @bind-Value="@_targetAddress" Disabled="!_updateAddressEnabled" Placeholder="Địa chỉ mới..." />
+                </Col>
+            </Row>
+
+            @* Trạng thái *@
+            <Row Gutter="16" Align="@RowAlign.Middle">
+                <Col Span="8"><Checkbox @bind-Checked="_updateStatusEnabled">Đổi trạng thái</Checkbox></Col>
+                <Col Span="16">
+                    <Select @bind-Value="@_targetStatus" TItem="string" TItemValue="string" Disabled="!_updateStatusEnabled">
+                        <SelectOptions>
+                            <SelectOption TItem="string" TItemValue="string" Value="@("Active")" Label="Đang học" />
+                            <SelectOption TItem="string" TItemValue="string" Value="@("Suspended")" Label="Bảo lưu" />
+                            <SelectOption TItem="string" TItemValue="string" Value="@("Graduated")" Label="Tốt nghiệp" />
+                        </SelectOptions>
+                    </Select>
+                </Col>
+            </Row>
+        </div>
+    </Modal>
+</div>

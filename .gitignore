@@ -1,0 +1,36 @@
+## [Visual Studio]
+## Thư mục Build
+[Bb]in/
+[Oo]bj/
+[Log]/
+
+## Thư mục công cụ của VS
+.vs/
+.vscode/
+*.user
+*.userosscache
+*.sln.docstates
+
+## [Cấu hình cá nhân - QUAN TRỌNG]
+## Không nên đẩy file chứa mật khẩu DB lên Git
+appsettings.Development.json
+appsettings.Local.json
+
+## [File tạm của hệ điều hành]
+.DS_Store
+Thumbs.db
+
+## [Rider / JetBrains]
+.idea/
+*.sln.iml
+
+## [Package Manager]
+*.nupkg
+**/packages/*
+!**/packages/build/
+
+## [Test]
+TestResults/
+
+## [Publish]
+publish/

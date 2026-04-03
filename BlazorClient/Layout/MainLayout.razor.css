@@ -1,0 +1,61 @@
+/* Tổng thể trang */
+.page {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+    background-color: #f8f9fa; 
+}
+
+.sidebar {
+    background-color: #1a233a;
+    background-image: none;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+}
+
+
+.top-row {
+    background-color: #ffffff;
+    border-bottom: 1px solid #eef2f7;
+    justify-content: flex-end;
+    height: 3.5rem;
+    display: flex;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+    .top-row ::deep a, .top-row ::deep .btn-link {
+        white-space: nowrap;
+        margin-left: 1.5rem;
+        text-decoration: none;
+        color: #5c6873;
+        font-weight: 500;
+    }
+
+        .top-row ::deep a:hover {
+            color: #3f51b5;
+        }
+
+/* Cấu trúc hiển thị trên màn hình lớn */
+@media (min-width: 641px) {
+    .page {
+        flex-direction: row;
+    }
+
+    .sidebar {
+        width: 260px;
+        height: 100vh;
+        position: sticky;
+        top: 0;
+    }
+
+    .top-row, article {
+        padding-left: 2.5rem !important;
+        padding-right: 2rem !important;
+    }
+}
